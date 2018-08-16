@@ -37,6 +37,11 @@ england <- list(s1516 =
                   E2 = read.csv(url(
                     "http://www.football-data.co.uk/mmz4281/1819/E2.csv"))
                 ))
+# save data to ensure long term storage only if file does not exist
+if(!file.exists("DATA/england/england.rds")){
+  saveRDS(england, "DATA/england/england.rds")
+}
+
 
 netherlands <- list(s1516 = 
                       list(E0 = read.csv(url(
@@ -53,3 +58,7 @@ netherlands <- list(s1516 =
                       "http://www.football-data.co.uk/mmz4281/1819/N1.csv"))
                     ))
 
+# save data to ensure long term storage only if file does not exist
+if(!file.exists("DATA/netherlands/netherlands.rds")){
+  saveRDS(england, "DATA/netherlands/netherlands.rds")
+}

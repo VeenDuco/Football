@@ -6,13 +6,15 @@
 # File description
 # This is the executive file - running all analyses centralized from from here 
 #
-# Loading packages
+# Loading packages and setting multiple core estimation to true
 library(plyr)
 library(dplyr)
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
 # reading in data
 source("get_data.r")
-
 
 # Prepare data for a certain season
 source("data_preparation.r")
@@ -31,4 +33,21 @@ netherlands.s1516 <- data.preparation(data = netherlands$s1516$E0,
 # all new teams got points equal to best relegated team. 
 
 # store current work:
-save.image("store_current_work.RData")
+#save.image("store_current_work.RData")
+
+# now estimating models over time
+# first up - england 15/16 premier league
+#
+#get model and set samples for posterior
+model.m0 <- stan_model("model_m0.stan")
+# load function to estimate model
+source("model_estimation.r")
+england.s1516.E0 <- model.analyses(stan.model = model.m0, nsamples = 1500, 
+                                   nweeks = england.s1516.pl$nweeks,
+                                   nteams = england.s1516.pl$nteams,
+                                   data.list = england.s1516.pl,
+                                   country = "england", season = "s1516",
+                                   league = "E0")
+saveRDS(england.s1516.E0, "FITS/england/s1516/E0/abilities.rds")
+
+
