@@ -1,5 +1,5 @@
 model.analyses <- function(stan.model, nsamples = 1500, nweeks, nteams,
-                           data.list, country, season, league){
+                           data.list, country, season, league, save.fits = TRUE){
   # array to store simulated abilities in. 
   ability.simulations <-  array(NA, c(nsamples, nweeks, nteams))
   
@@ -24,11 +24,13 @@ model.analyses <- function(stan.model, nsamples = 1500, nweeks, nteams,
     # now get the model samples, adapt_delta higher due to initial small samples
     fit <- sampling(stan.model, chains = 4, iter = (nsamples/2), 
                     data = selected.data, control = list(adapt_delta = .95))
+    if(save.fits == TRUE){
     # store full posteriors
     if(!file.exists(paste0("FITS/", country, "/", season, "/", league, "/fit_", 
                            week, ".rds"))){
     saveRDS(fit, paste0("FITS/", country, "/", season, "/", league, "/fit_", 
                         week, ".rds"))
+    }
     }
     # now extract the samples for the fit object so we can get the ability's
     samples.fit <- extract(fit)
