@@ -81,7 +81,7 @@ netherlands.s1819.E0 <- model.analyses(stan.model = model.m0, nsamples = 1500,
                                        nteams = netherlands.s1819$nteams,
                                        data.list = netherlands.s1819,
                                        country = "netherlands", season = "s1819",
-                                       league = "E0", save.fits = FALSE)
+                                       league = "E0", save.fits = TRUE)
 # save or load the model
 saveRDS(netherlands.s1819.E0, "FITS/netherlands/s1819/E0/abilities.rds")
 netherlands.s1819.E0 <- readRDS("FITS/netherlands/s1819/E0/abilities.rds")
@@ -89,23 +89,6 @@ netherlands.s1819.E0 <- readRDS("FITS/netherlands/s1819/E0/abilities.rds")
 
 
 # Plotting
-# plot ability estimates after week 1
-a_hat.wk1 <- colMeans(england.s1516.E0[,1,])
-a_se.wk1 <- sqrt(colVars(england.s1516.E0[,1,]))
-coefplot (a_hat.wk1[order(a_hat.wk1)], a_se[order(a_hat.wk1)], 
-          CI=1, varnames=england.s1516.pl$team_names[order(a_hat.wk1)],
-          main="Team abilities after week 1 (estimate +/- 1 s.e.)\n Teams are sorted according to previous performance\n", 
-          cex.var=.9, mar=c(1,6,5.1,2), xlim=c(-2,2))
-for(i in 2:38){
-# plot ability estimates after weeks 2-38
-a_hat <- colMeans(england.s1516.E0[,i,])
-a_se <- sqrt(colVars(england.s1516.E0[,i,]))
-coefplot (a_hat[order(a_hat.wk1)], a_se[order(a_hat.wk1)], 
-               CI=1, varnames=england.s1516.pl$team_names[order(a_hat.wk1)],
-               main=paste0("Team abilities after week ",i,
-                           " (estimate +/- 1 s.e.)\n Teams are sorted according to total achieved points\n"), 
-               cex.var=.9, mar=c(1,6,5.1,2), xlim=c(-2,2))
-}
 #https://github.com/milkha/EPL/blob/master/epl_rev.Rmd
 #https://github.com/milkha/EPL/blob/master/epl_rev.pdf
 
@@ -131,3 +114,12 @@ all.teams.plot(data.list = netherlands.s1516,
 coef.week.plot(data.list = netherlands.s1516, 
                ability.matrix = netherlands.s1516.E0,
                SE = 2, week = 2)
+
+source("model_checking.r")
+model.checking(england.s1516.pl, 20, 38, "england", "s1516", "E0")
+model.checking(netherlands.s1516, 18, 34, "netherlands", "s1516", "E0")
+# test to check with smaller sequences;
+test <- netherlands.s1516
+test$score_diff <- test$score_diff[1:90]
+model.checking(test, 18, 10, "netherlands", "s1516", "E0")
+model.checking(netherlands.s1819, 18, 2, "netherlands", "s1819", "E0")
