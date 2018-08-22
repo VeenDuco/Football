@@ -1,9 +1,8 @@
 model.checking <- function(data.list, nteams, nweeks, country, season, league){
   fit <- readRDS(paste0("FITS/", country, "/", season, "/", league, "/",
-                        "fit_", nweeks, ".rds"))
-  sims <- extract(fit)
+                        "model_after_week", nweeks, ".rds"))
   scd <- data.list$score_diff
-  scd_sims <- sims$score_diff_rep
+  scd_sims <- fit$score_diff_rep
   scd_hat <- colMedians(scd_sims)
   scd_se <- sqrt(colVars(scd_sims))
   alpha <- 0.95

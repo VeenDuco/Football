@@ -63,8 +63,7 @@ england.s1516.E0 <- model.analyses(stan.model = model.m0, nsamples = 1500,
                                    country = "england", season = "s1516",
                                    league = "E0")
 # save or load the model
-saveRDS(england.s1516.E0, "FITS/england/s1516/E0/abilities.rds")
-england.s1516.E0 <- readRDS("FITS/england/s1516/E0/abilities.rds")
+england.s1516.E0 <- readRDS("FITS/england/s1516/E0/model_after_week38.rds")
 
 netherlands.s1516.E0 <- model.analyses(stan.model = model.m0, nsamples = 1500, 
                                    nweeks = netherlands.s1516$nweeks,
@@ -73,19 +72,16 @@ netherlands.s1516.E0 <- model.analyses(stan.model = model.m0, nsamples = 1500,
                                    country = "netherlands", season = "s1516",
                                    league = "E0")
 # save or load the model
-saveRDS(netherlands.s1516.E0, "FITS/netherlands/s1516/E0/abilities.rds")
-netherlands.s1516.E0 <- readRDS("FITS/netherlands/s1516/E0/abilities.rds")
+netherlands.s1516.E0 <- readRDS("FITS/netherlands/s1516/E0/model_after_week34.rds")
 
 netherlands.s1819.E0 <- model.analyses(stan.model = model.m0, nsamples = 1500, 
                                        nweeks = netherlands.s1819$nweeks,
                                        nteams = netherlands.s1819$nteams,
                                        data.list = netherlands.s1819,
                                        country = "netherlands", season = "s1819",
-                                       league = "E0", save.fits = TRUE)
+                                       league = "E0")
 # save or load the model
-saveRDS(netherlands.s1819.E0, "FITS/netherlands/s1819/E0/abilities.rds")
-netherlands.s1819.E0 <- readRDS("FITS/netherlands/s1819/E0/abilities.rds")
-
+netherlands.s1819.E0 <- readRDS("FITS/netherlands/s1819/E0/model_after_week2.rds")
 
 
 # Plotting
@@ -94,32 +90,29 @@ netherlands.s1819.E0 <- readRDS("FITS/netherlands/s1819/E0/abilities.rds")
 
 
 source("plot_functions.r")
-individual.team.plot(data.list = england.s1516.pl, 
-                     ability.matrix = england.s1516.E0,
+individual.team.plot(data.list = england.s1516.E0$data.list, 
+                     ability.matrix = england.s1516.E0$ability.simulations,
                      teamname = "Arsenal", SE = 1)
 
 
-individual.team.plot(data.list = netherlands.s1516, 
-                     ability.matrix = netherlands.s1516.E0,
+individual.team.plot(data.list = netherlands.s1516.E0$data.list, 
+                     ability.matrix = netherlands.s1516.E0$ability.simulations,
                      teamname = "Cambuur", SE = 2)
 
-individual.team.plot(data.list = netherlands.s1819, 
-                     ability.matrix = netherlands.s1819.E0,
+individual.team.plot(data.list = netherlands.s1819.E0$data.list, 
+                     ability.matrix = netherlands.s1819.E0$ability.simulations,
                      teamname = "PSV Eindhoven", SE = 2)
 
-all.teams.plot(data.list = netherlands.s1516, 
-               ability.matrix = netherlands.s1516.E0,
+all.teams.plot(data.list = netherlands.s1516.E0$data.list, 
+               ability.matrix = netherlands.s1516.E0$ability.simulations,
                SE = 2)
 
-coef.week.plot(data.list = netherlands.s1516, 
-               ability.matrix = netherlands.s1516.E0,
+coef.week.plot(data.list = netherlands.s1516.E0$data.list, 
+               ability.matrix = netherlands.s1516.E0$ability.simulations,
                SE = 2, week = 2)
 
 source("model_checking.r")
-model.checking(england.s1516.pl, 20, 38, "england", "s1516", "E0")
-model.checking(netherlands.s1516, 18, 34, "netherlands", "s1516", "E0")
+model.checking(england.s1516.E0$data.list, 20, 38, "england", "s1516", "E0")
+model.checking(netherlands.s1516.E0$data.list, 18, 34, "netherlands", "s1516", "E0")
 # test to check with smaller sequences;
-test <- netherlands.s1516
-test$score_diff <- test$score_diff[1:90]
-model.checking(test, 18, 10, "netherlands", "s1516", "E0")
-model.checking(netherlands.s1819, 18, 2, "netherlands", "s1819", "E0")
+model.checking(netherlands.s1819.E0$data.list, 18, 2, "netherlands", "s1819", "E0")
